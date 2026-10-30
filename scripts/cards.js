@@ -34,14 +34,14 @@ function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal
 }
 // Luz que recorre el borde de la tarjeta (con un halo suave)
 function lightBorder(id, w, h) {
-  // Misma velocidad en todas las tarjetas (px por segundo) y todas empiezan juntas,
-  // así la luz se ve sincronizada aunque las tarjetas tengan tamaños distintos.
-  const per = 2 * (w + h) - (8 - 2 * Math.PI) * (R - 1), dash = 170, speed = 330, dur = (per / speed).toFixed(2);
-  const r = (extra) => `<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${R - 1}" fill="none" stroke="url(#${id}lb)" stroke-linecap="round" stroke-dasharray="${dash} ${(per - dash).toFixed(1)}" ${extra}>
-    <animate attributeName="stroke-dashoffset" values="0;-${per.toFixed(1)}" dur="${dur}s" repeatCount="indefinite"/></rect>`;
-  return `<defs><linearGradient id="${id}lb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.teal}"/><stop offset=".5" stop-color="${C.azure}"/><stop offset="1" stop-color="${C.blue}"/></linearGradient>
-    <filter id="${id}lbg" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs>
-  ${r('stroke-width="5" opacity=".55" filter="url(#' + id + 'lbg)"')}${r('stroke-width="1.6"')}`;
+  // Todo el borde brilla con un degradado (verde → azure → azul oscuro) que gira despacio.
+  // Misma duración en todas las tarjetas, así se ven al mismo ritmo.
+  const grad = `<linearGradient id="${id}lb" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="${C.teal}"/><stop offset=".35" stop-color="${C.azure}"/><stop offset=".65" stop-color="${C.navy}" stop-opacity=".25"/><stop offset="1" stop-color="${C.teal}"/>
+      <animateTransform attributeName="gradientTransform" type="rotate" values="0 .5 .5;360 .5 .5" dur="8s" repeatCount="indefinite"/></linearGradient>`;
+  const rect = extra => `<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${R - 1}" fill="none" stroke="url(#${id}lb)" ${extra}/>`;
+  return `<defs>${grad}<filter id="${id}lbg" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+  ${rect(`stroke-width="6" filter="url(#${id}lbg)" opacity=".45"`)}${rect('stroke-width="1.5"')}`;
 }
 // Partículas que suben despacio (números fijos para que siempre salga igual)
 function particles(w, h, n, seed = 7) {
