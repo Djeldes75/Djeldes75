@@ -16,15 +16,14 @@
 
 #### Coursework
 
-<a href="https://github.com/Djeldes75?tab=repositories"><img src="assets/coursework.svg" alt="Coursework: software-dev-lab-3, dsa-2, software-dev-2, dsa-1, software-dev-1, and a game coming soon" width="100%"></a>
-
-<p align="center"><sub>
-<a href="https://github.com/Djeldes75/software-dev-lab-3">software-dev-lab-3</a> ·
-<a href="https://github.com/Djeldes75/dsa-2">dsa-2</a> ·
-<a href="https://github.com/Djeldes75/software-dev-2">software-dev-2</a> ·
-<a href="https://github.com/Djeldes75/dsa-1">dsa-1</a> ·
-<a href="https://github.com/Djeldes75/software-dev-1">software-dev-1</a>
-</sub></p>
+<p>
+  <a href="https://github.com/Djeldes75/software-dev-lab-3"><img src="assets/c-lab3.svg" alt="software-dev-lab-3" width="49%"></a>
+  <a href="https://github.com/Djeldes75/dsa-2"><img src="assets/c-dsa2.svg" alt="dsa-2" width="49%"></a>
+  <a href="https://github.com/Djeldes75/software-dev-2"><img src="assets/c-sd2.svg" alt="software-dev-2" width="49%"></a>
+  <a href="https://github.com/Djeldes75/dsa-1"><img src="assets/c-dsa1.svg" alt="dsa-1" width="49%"></a>
+  <a href="https://github.com/Djeldes75/software-dev-1"><img src="assets/c-sd1.svg" alt="software-dev-1" width="49%"></a>
+  <img src="assets/c-locked.svg" alt="Next: a game, coming soon" width="49%">
+</p>
 
 #### Toolbox
 

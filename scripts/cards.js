@@ -176,10 +176,14 @@ const COURSES = [
   ['dsa-1', 'Data Structures & Algorithms 1', 'Stacks, queues, trees and hash tables.', ['C++', 'Visual Studio']],
   ['software-dev-1', 'Software Development 1', 'Inventory and library systems.', ['C#', 'Windows Forms', 'SQL Server']],
 ];
-function coursework() {
+function coursework(only) {
+  // only = número de tarjeta: dibuja el mismo fondo de toda la cuadrícula, pero recorta
+  // solo esa tarjeta. Así cada tarjeta es su propia imagen (con su enlace) y, puestas
+  // juntas, los colores y el reflejo continúan de una a otra.
   const W = 1280, cw = 632, ch = 200, g = 16, H = 3 * ch + 2 * g, P = 12;
   const cells = [0, 1, 2, 3, 4, 5].map(i => ({ x: (i % 2) * (cw + g), y: Math.floor(i / 2) * (ch + g) }));
-  const union = cells.map(c => `<rect x="${c.x}" y="${c.y}" width="${cw}" height="${ch}" rx="${R}"/>`).join('');
+  const mine = only === undefined ? cells : [cells[only]];
+  const union = mine.map(c => `<rect x="${c.x}" y="${c.y}" width="${cw}" height="${ch}" rx="${R}"/>`).join('');
   const blob = (cx, cy, r, color, dx, dy, dur, op) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="${op}">
       <animateTransform attributeName="transform" type="translate" values="0 0; ${dx} ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>`;
   const card = (c, i) => {
@@ -201,7 +205,8 @@ function coursework() {
         ${pills(34, 146, tags)}
       </g></g>`;
   };
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W + 2 * P}" height="${H + 2 * P}" viewBox="${-P} ${-P} ${W + 2 * P} ${H + 2 * P}" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+  const vb = only === undefined ? [-P, -P, W + 2 * P, H + 2 * P] : [cells[only].x - P, cells[only].y - P, cw + 2 * P, ch + 2 * P];
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${vb[2]}" height="${vb[3]}" viewBox="${vb.join(' ')}" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
   ${FONT_CSS}
   <defs>
     <clipPath id="cwall">${union}</clipPath>
@@ -221,10 +226,10 @@ function coursework() {
       ${blob(250, 560, 180, C.teal, 90, -50, 15, .13)}
       ${blob(1100, 80, 160, C.azure, -100, 60, 13, .18)}
     </g>
-    ${cells.map(card).join('')}
+    ${cells.map((c, i) => (only === undefined || i === only) ? card(c, i) : '').join('')}
     ${sheen('cw', W, H)}
   </g>
-  ${cells.map(c => `<rect x="${c.x + 1}" y="${c.y + 1}" width="${cw - 2}" height="${ch - 2}" rx="${R - 1}" fill="none" stroke="url(#cwlb)" stroke-width="6" filter="url(#cwglow)" opacity=".35"/>
+  ${mine.map(c => `<rect x="${c.x + 1}" y="${c.y + 1}" width="${cw - 2}" height="${ch - 2}" rx="${R - 1}" fill="none" stroke="url(#cwlb)" stroke-width="6" filter="url(#cwglow)" opacity=".35"/>
   <rect x="${c.x + 1}" y="${c.y + 1}" width="${cw - 2}" height="${ch - 2}" rx="${R - 1}" fill="none" stroke="url(#cwlb)" stroke-width="1.4" opacity=".9"/>`).join('')}
 </svg>
 `;
@@ -246,7 +251,7 @@ const out = {
   'btn-youtube.svg': button('VIDEOS ON YOUTUBE', '@qDothy', '#ff2d2d', ICON.play),
   'btn-linkedin.svg': button('WORK · LINKEDIN', 'dominiquejeldes', '#0a66c2', ICON.case),
   'plana.svg': plana(),
-  'coursework.svg': coursework(),
+  ...Object.fromEntries(['c-lab3', 'c-dsa2', 'c-sd2', 'c-dsa1', 'c-sd1', 'c-locked'].map((n, i) => [n + '.svg', coursework(i)])),
   'tools.svg': tools(),
 };
 for (const [f, s] of Object.entries(out)) fs.writeFileSync(path.join(A, f), s);
