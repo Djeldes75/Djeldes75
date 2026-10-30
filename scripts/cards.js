@@ -12,7 +12,7 @@ const R = 20; // esquinas redondeadas
 function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal] } = {}) {
   const blob = (cx, cy, r, color, dx, dy, dur, op) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="${op}">
       <animateTransform attributeName="transform" type="translate" values="0 0; ${dx} ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
   <defs>
     <linearGradient id="${id}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.bg1}"/><stop offset="1" stop-color="${C.bg2}"/></linearGradient>
     <clipPath id="${id}clip"><rect width="${w}" height="${h}" rx="${R}"/></clipPath>
@@ -61,6 +61,32 @@ const pills = (x, y, list) => { let cx = x; return list.map(t => { const s = pil
 const pulse = (cx, cy, color) => `<circle cx="${cx}" cy="${cy}" r="5" fill="${color}"/><circle cx="${cx}" cy="${cy}" r="5" fill="none" stroke="${color}" stroke-width="2">
   <animate attributeName="r" values="5;13" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.8s" repeatCount="indefinite"/></circle>`;
 
+
+// Número que cuenta de 0 a N al principio de cada ciclo (SMIL no puede cambiar el texto,
+// así que hay un <text> por número y se muestra uno a la vez).
+const ease = t => 1 - Math.pow(1 - t, 3);
+function counter(x, y, n, { cycle = 12, count = 1.8, attrs = '', suffix = '' } = {}) {
+  const out = [];
+  for (let i = 0; i <= n; i++) {
+    const a = (count * ease(i / Math.max(n, 1))) / cycle, b = i < n ? (count * ease((i + 1) / Math.max(n, 1))) / cycle : 1;
+    const kt = i === 0 ? `0;${b.toFixed(4)};1` : `0;${a.toFixed(4)};${b.toFixed(4)}${i < n ? ';1' : ''}`;
+    const vals = i === 0 ? '1;0;0' : (i < n ? '0;1;0;0' : '0;1;1');
+    out.push(`<text x="${x}" y="${y}" ${attrs} opacity="${i === 0 ? 1 : 0}">${i}${suffix}<animate attributeName="opacity" values="${vals}" keyTimes="${kt}" dur="${cycle}s" calcMode="discrete" repeatCount="indefinite"/></text>`);
+  }
+  return out.join('');
+}
+// Barra de segmentos que se encienden uno por uno al principio del ciclo
+function segBar(x, y, w, n, color, { cycle = 12, start = .2, step = .09, segs = 10 } = {}) {
+  const gap = 4, sw = (w - gap * (segs - 1)) / segs;
+  return Array.from({ length: segs }, (_, i) => {
+    const sx = (x + i * (sw + gap)).toFixed(1);
+    if (i >= n) return `<rect x="${sx}" y="${y}" width="${sw.toFixed(1)}" height="8" rx="2" fill="#ffffff" fill-opacity=".07"/>`;
+    const t = ((start + i * step) / cycle).toFixed(4);
+    return `<rect x="${sx}" y="${y}" width="${sw.toFixed(1)}" height="8" rx="2" fill="#ffffff" fill-opacity=".07"/>
+      <rect x="${sx}" y="${y}" width="${sw.toFixed(1)}" height="8" rx="2" fill="${color}" opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;${t};1" dur="${cycle}s" calcMode="discrete" repeatCount="indefinite"/></rect>`;
+  }).join('');
+}
+
 // ---------- 1. Portada ----------
 function hero() {
   const w = 1280, h = 340;
@@ -77,6 +103,15 @@ function hero() {
     <text x="64" y="228" font-size="24" fill="${C.soft}" clip-path="url(#type)">${esc(typed)}</text>
 
     ${pulse(72, 282, C.teal)}
+    <g transform="translate(838 52)">
+      <rect width="380" height="236" rx="16" fill="#0a0f16" fill-opacity=".72" stroke="${C.line}"/>
+      <text x="22" y="34" font-family="${MONO}" font-size="12" letter-spacing="2.5" fill="${C.soft}">STATS</text>
+      ${pulse(300, 30, C.teal)}<text x="312" y="34" font-family="${MONO}" font-size="12" letter-spacing="2" fill="${C.teal}">LIVE</text>
+      ${[['Data centers', 9, C.teal], ['Video games', 10, C.azure], ['Building useful apps', 8, C.violet], ['Loving to code', 4, C.amber]].map(([t, v, col], k) => `
+        <text x="22" y="${70 + k * 44}" font-size="15" font-weight="600" fill="#e3eaf4">${t}</text>
+        ${counter(358, 70 + k * 44, v, { count: .2 + v * .09, attrs: `text-anchor="end" font-family="${MONO}" font-size="14" fill="${C.soft}"` })}
+        ${segBar(22, 80 + k * 44, 336, v, col, { start: .2 + k * .15 })}`).join('')}
+    </g>
     <text x="90" y="288" font-size="16" font-weight="600" fill="#cfd8e6">online · streaming on Twitch &amp; YouTube</text>
   </g>`);
 }
@@ -102,7 +137,7 @@ const ICON = {
 // ---------- 3. Plana ----------
 function plana() {
   const w = 1280, h = 330;
-  const pages = JSON.parse(fs.readFileSync('/tmp/pages.json')).light;
+  const pages = JSON.parse(fs.readFileSync('/tmp/pages-hd.json')).light;
   const pg = (src, x, y, rot, dy, dur) => `<g transform="translate(${x} ${y}) rotate(${rot})"><g>
     <animateTransform attributeName="transform" type="translate" values="0 0; 0 ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/>
     <rect x="-2" y="6" width="154" height="246" rx="6" fill="#000" opacity=".35"/>

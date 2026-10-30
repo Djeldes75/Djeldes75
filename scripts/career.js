@@ -8,16 +8,28 @@ const p = Math.max(0, Math.min(100, Math.round(Number(c.progress) || 0)));
 const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
 const W = 1280, H = 220, X = 56, BW = W - 2 * X, BY = 142, BH = 18;
 const fill = Math.round(BW * p / 100);
+const ease = t => 1 - Math.pow(1 - t, 3);
+function countUp(x, y, n, cycle = 12, count = 1.8) {
+  let out = '';
+  for (let i = 0; i <= n; i++) {
+    const a = count * ease(i / Math.max(n, 1)) / cycle, b = i < n ? count * ease((i + 1) / Math.max(n, 1)) / cycle : 1;
+    const kt = i === 0 ? `0;${b.toFixed(4)};1` : `0;${a.toFixed(4)};${b.toFixed(4)}${i < n ? ';1' : ''}`;
+    const vals = i === 0 ? '1;0;0' : (i < n ? '0;1;0;0' : '0;1;1');
+    out += `<text x="${x}" y="${y}" font-size="54" font-weight="800" text-anchor="end" fill="#3aa0ff" opacity="${i === 0 ? 1 : 0}">${i}<animate attributeName="opacity" values="${vals}" keyTimes="${kt}" dur="${cycle}s" calcMode="discrete" repeatCount="indefinite"/></text>`;
+  }
+  return out;
+}
+// punta de la barra que brilla
 const PER = 2 * (W + H) - (8 - 2 * Math.PI) * 19;
 const ticks = Array.from({ length: 19 }, (_, i) => X + Math.round(BW * (i + 1) / 20))
   .map(x => `<rect x="${x}" y="${BY}" width="2" height="${BH}" fill="#0c1118" opacity=".9"/>`).join('');
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.degree)} progress: ${p}%">
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.degree)} progress: ${p}%">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#131a24"/><stop offset="1" stop-color="#0c1118"/></linearGradient>
     <linearGradient id="bar" x1="0" x2="1"><stop offset="0" stop-color="#1e6bff"/><stop offset=".7" stop-color="#3aa0ff"/><stop offset="1" stop-color="#4bd6b4"/></linearGradient>
     <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     <clipPath id="card"><rect width="${W}" height="${H}" rx="20"/></clipPath>
-    <clipPath id="fillclip"><rect x="${X}" y="${BY}" width="${fill}" height="${BH}" rx="9"><animate attributeName="width" from="0" to="${fill}" dur="1.6s" fill="freeze" calcMode="spline" keySplines=".2 .8 .2 1" keyTimes="0;1"/></rect></clipPath>
+    <clipPath id="fillclip"><rect x="${X}" y="${BY}" width="${fill}" height="${BH}" rx="9"><animate attributeName="width" values="0;${fill};${fill}" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/></rect></clipPath>
     <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="50"/></filter>
     <filter id="soft" x="-20%" y="-200%" width="140%" height="500%"><feGaussianBlur stdDeviation="6"/></filter>
   </defs>
@@ -33,13 +45,15 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   <g font-family="Segoe UI, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
     <text x="${X}" y="58" font-size="14" letter-spacing="3" fill="#4bd6b4" font-family="ui-monospace, Consolas, Menlo, monospace">MY DEGREE</text>
     <text x="${X}" y="104" font-size="38" font-weight="800" fill="#eef3fb">${esc(c.degree)}<tspan fill="#8d99ab" font-weight="600" font-size="26"> · ${esc(c.school)}</tspan></text>
-    <text x="${W - X}" y="104" font-size="54" font-weight="800" text-anchor="end" fill="#3aa0ff">${p}<tspan font-size="30" fill="#8d99ab">%</tspan></text>
+    ${countUp(W - X - 34, 104, p)}
+    <text x="${W - X}" y="104" font-size="30" font-weight="800" text-anchor="end" fill="#8d99ab">%</text>
   </g>
   <rect x="${X}" y="${BY}" width="${BW}" height="${BH}" rx="9" fill="#1d2430"/>
   <g clip-path="url(#fillclip)">
     <rect x="${X}" y="${BY}" width="${fill}" height="${BH}" fill="url(#bar)"/>
-    <rect x="${X - 200}" y="${BY}" width="200" height="${BH}" fill="url(#shine)"><animate attributeName="x" values="${X - 200};${X + fill}" dur="2.8s" begin="1.6s" repeatCount="indefinite"/></rect>
+    <rect x="${X - 200}" y="${BY}" width="200" height="${BH}" fill="url(#shine)"><animate attributeName="x" values="${X - 200};${X + fill}" dur="2.6s" repeatCount="indefinite"/></rect>
   </g>
+  <circle cx="${X}" cy="${BY + BH / 2}" r="7" fill="#4bd6b4" opacity=".9"><animate attributeName="cx" values="${X};${X + fill};${X + fill}" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/><animate attributeName="r" values="6;10;6" dur="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;.4;.9" dur="1.4s" repeatCount="indefinite"/></circle>
   ${ticks}
   <g font-family="ui-monospace, Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#8d99ab">
     <text x="${X}" y="${BY + 50}">START</text>
