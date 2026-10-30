@@ -1,52 +1,26 @@
-<img src="assets/banner.png" alt="Dominique Jeldes - Systems Engineering, INTEC" width="100%">
+<img src="assets/banner.jpg" alt="Dominique Jeldes - Systems Engineering, INTEC" width="100%">
 
 <p align="center">
-  <a href="https://www.linkedin.com/in/dominiquejeldes"><img src="https://img.shields.io/badge/LinkedIn-1f2328?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-  <a href="https://djeldes75.github.io/Plana/"><img src="https://img.shields.io/badge/Plana-open%20the%20app-3E9A86?style=flat-square" alt="Plana"></a>
+  <a href="https://www.twitch.tv/qdothy"><img src="assets/btn-twitch.jpg" alt="Twitch: qdothy" width="32%"></a>
+  <a href="https://www.youtube.com/@qDothy"><img src="assets/btn-youtube.jpg" alt="YouTube: @qDothy" width="32%"></a>
+  <a href="https://www.linkedin.com/in/dominiquejeldes"><img src="assets/btn-linkedin.jpg" alt="LinkedIn: dominiquejeldes" width="32%"></a>
 </p>
 
-<br>
+### Hi, I'm Domi
 
-**About** · Systems Engineering student at INTEC. Interested in data centers and video games.
-I build an app when I need one, and I keep it only if I actually use it.
+Systems Engineering student at INTEC, into **data centers** and **video games**.
+I stream on Twitch and YouTube, and I build an app when I need one, then keep it only if I actually use it.
 
-<br>
-
-### Featured
-
-<table>
-<tr>
-<td width="55%">
-<a href="https://github.com/Djeldes75/Plana"><img src="https://raw.githubusercontent.com/Djeldes75/Plana/main/docs/banner-light.png" alt="Plana"></a>
-</td>
-<td>
-
-**[Plana](https://github.com/Djeldes75/Plana)**<br>
-Notebook templates for Samsung Notes, sized to the real screen of each Galaxy Tab.
-
-Vector PDF · works offline · installable · English, Español, Lietuvių
-
-</td>
-</tr>
-</table>
+<a href="https://github.com/Djeldes75/Plana"><img src="assets/plana.jpg" alt="Featured project: Plana, notebook templates for Samsung Notes" width="100%"></a>
 
 ### Coursework
 
-| | |
-|---|---|
-| [software-dev-lab-3](https://github.com/Djeldes75/software-dev-lab-3) | ASP.NET Core, NServiceBus, TCP sockets, web services, SSRS |
-| [dsa-2](https://github.com/Djeldes75/dsa-2) | Graphs, backtracking, Minimax; maze game in Python |
-| [dsa-1](https://github.com/Djeldes75/dsa-1) | Stacks, queues, trees, hash tables in C++ |
-| [software-dev-2](https://github.com/Djeldes75/software-dev-2) | Sales and purchasing system on SQL Server |
-| [software-dev-1](https://github.com/Djeldes75/software-dev-1) | Inventory and library systems in C# |
+<p>
+  <a href="https://github.com/Djeldes75/software-dev-lab-3"><img src="assets/c-lab3.jpg" alt="software-dev-lab-3" width="49%"></a>
+  <a href="https://github.com/Djeldes75/dsa-2"><img src="assets/c-dsa2.jpg" alt="dsa-2" width="49%"></a>
+  <a href="https://github.com/Djeldes75/dsa-1"><img src="assets/c-dsa1.jpg" alt="dsa-1" width="49%"></a>
+  <a href="https://github.com/Djeldes75/software-dev-2"><img src="assets/c-sd2.jpg" alt="software-dev-2" width="49%"></a>
+  <a href="https://github.com/Djeldes75/software-dev-1"><img src="assets/c-sd1.jpg" alt="software-dev-1" width="49%"></a>
+</p>
 
-### Tools
-
-![C#](https://img.shields.io/badge/C%23-1f2328?style=flat-square&logo=dotnet&logoColor=white)
-![.NET](https://img.shields.io/badge/.NET-1f2328?style=flat-square&logo=dotnet&logoColor=white)
-![C++](https://img.shields.io/badge/C++-1f2328?style=flat-square&logo=cplusplus&logoColor=white)
-![Python](https://img.shields.io/badge/Python-1f2328?style=flat-square&logo=python&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-1f2328?style=flat-square&logo=javascript&logoColor=white)
-![SQL Server](https://img.shields.io/badge/SQL%20Server-1f2328?style=flat-square&logo=microsoftsqlserver&logoColor=white)
-![Git](https://img.shields.io/badge/Git-1f2328?style=flat-square&logo=git&logoColor=white)
-![Visual Studio](https://img.shields.io/badge/Visual%20Studio-1f2328?style=flat-square&logo=visualstudio&logoColor=white)
+<img src="assets/tools.jpg" alt="Tools: C#, .NET, C++, Python, JavaScript, SQL Server, Git, GitHub Actions, Visual Studio, DaVinci Resolve, OBS" width="100%">
