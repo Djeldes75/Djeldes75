@@ -23,6 +23,7 @@ function countUp(x, y, n, cycle = 12, count = 1.8) {
   return out;
 }
 // punta de la barra que brilla
+const grow = `<animate attributeName="width" values="0;${fill};${fill}" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/>`;
 const PER = 2 * (W + H) - (8 - 2 * Math.PI) * 19;
 const ticks = Array.from({ length: 19 }, (_, i) => X + Math.round(BW * (i + 1) / 20))
   .map(x => `<rect x="${x}" y="${BY}" width="2" height="${BH}" fill="#0c1118" opacity=".9"/>`).join('');
@@ -30,6 +31,12 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPr
   ${FONT_CSS}
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#131a24"/><stop offset="1" stop-color="#0c1118"/></linearGradient>
+    <linearGradient id="aur" gradientUnits="userSpaceOnUse" x1="${X}" x2="${X + BW * .8}" y1="0" y2="0" spreadMethod="reflect"><stop offset="0" stop-color="#1e6bff"/><stop offset=".35" stop-color="#3aa0ff"/><stop offset=".65" stop-color="#4bd6b4"/><stop offset="1" stop-color="#9b8cff"/>
+      <animateTransform attributeName="gradientTransform" type="translate" values="0 0;${BW * .8 * 2} 0" dur="8s" repeatCount="indefinite"/></linearGradient>
+    <linearGradient id="pulse" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <clipPath id="pulseclip"><rect x="${X}" y="${BY + BH / 2 - 6}" width="${fill}" height="12" rx="6">${grow}</rect></clipPath>
+    <filter id="neonsoft" x="-20%" y="-400%" width="140%" height="900%"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="neonwide" x="-20%" y="-400%" width="140%" height="900%"><feGaussianBlur stdDeviation="12"/></filter>
     <linearGradient id="bar" x1="0" x2="1"><stop offset="0" stop-color="#0b3a8c"/><stop offset=".55" stop-color="#1e6bff"/><stop offset="1" stop-color="#3aa0ff"/></linearGradient>
     <linearGradient id="flow" gradientUnits="userSpaceOnUse" x1="${X}" y1="0" x2="${X + BW}" y2="0" spreadMethod="reflect">
       <stop offset="0" stop-color="#0b3a8c"/><stop offset=".33" stop-color="#1e6bff"/><stop offset=".66" stop-color="#3aa0ff"/><stop offset="1" stop-color="#0b3a8c"/>
@@ -43,8 +50,6 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPr
   </defs>
   <g clip-path="url(#card)">
     <rect width="${W}" height="${H}" fill="url(#bg)"/>
-    <g transform="skewX(-22)"><rect x="${-220 - H}" y="-20" width="220" height="${H + 40}" fill="url(#sh)">
-      <animateTransform attributeName="transform" type="translate" values="0 0; ${W + 220 + 2 * H} 0; ${W + 220 + 2 * H} 0" keyTimes="0;.4;1" dur="7s" calcMode="spline" keySplines=".45 0 .55 1;0 0 1 1" repeatCount="indefinite"/></rect></g>
     <circle cx="80" cy="0" r="170" fill="#0b2d63" filter="url(#blur)"><animateTransform attributeName="transform" type="translate" values="0 0;90 30;0 0" dur="14s" repeatCount="indefinite"/></circle>
   </g>
   <rect x=".5" y=".5" width="${W - 1}" height="${H - 1}" rx="20" fill="none" stroke="#263142"/>
@@ -59,17 +64,20 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPr
     ${countUp(W - X - 34, 104, p)}
     <text x="${W - X}" y="104" font-size="30" font-weight="800" text-anchor="end" fill="#8d99ab">%</text>
   </g>
-  <rect x="${X}" y="${BY}" width="${BW}" height="${BH}" rx="6" fill="#1a212c"/>
-  ${[25, 50, 75].map(m => `<circle cx="${X + BW * m / 100}" cy="${BY + BH / 2}" r="2" fill="#3a4659"/>`).join('')}
-  <rect x="${X}" y="${BY - 3}" width="${fill}" height="${BH + 6}" rx="9" fill="url(#bar)" opacity=".45" filter="url(#soft)">
-    <animate attributeName="width" values="0;${fill};${fill}" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values=".35;.7;.35" dur="2.4s" repeatCount="indefinite"/></rect>
-  <g clip-path="url(#fillclip)">
-    <rect x="${X}" y="${BY}" width="${fill}" height="${BH}" fill="url(#flow)"/>
-    <rect x="${X - 240}" y="${BY}" width="240" height="${BH}" fill="url(#shine)"><animate attributeName="x" values="${X - 240};${X + fill}" dur="3.2s" repeatCount="indefinite"/></rect>
+  <rect x="${X}" y="${BY + BH / 2 - 3}" width="${BW}" height="6" rx="3" fill="#1a212c"/>
+  ${[25, 50, 75].map(m => `<circle cx="${X + BW * m / 100}" cy="${BY + BH / 2}" r="2.2" fill="none"/><circle cx="${X + BW * m / 100}" cy="${BY + BH / 2}" r="2" fill="#3a4659"/>`).join('')}
+  <g>
+    <rect x="${X}" y="${BY + BH / 2 - 6}" width="${fill}" height="12" rx="6" fill="url(#aur)" filter="url(#neonwide)" opacity=".8">${grow}<animate attributeName="opacity" values=".55;.95;.55" dur="1.8s" repeatCount="indefinite"/></rect>
+    <rect x="${X}" y="${BY + BH / 2 - 4}" width="${fill}" height="8" rx="4" fill="url(#aur)" filter="url(#neonsoft)">${grow}</rect>
+    <rect x="${X}" y="${BY + BH / 2 - 3}" width="${fill}" height="6" rx="3" fill="url(#aur)">${grow}</rect>
+    <rect x="${X}" y="${BY + BH / 2 - 1}" width="${fill}" height="2" rx="1" fill="#f2fbff" opacity=".85">${grow}</rect>
+    <g clip-path="url(#pulseclip)"><rect x="${X - 180}" y="${BY + BH / 2 - 6}" width="180" height="12" fill="url(#pulse)"><animate attributeName="x" values="${X - 180};${X + fill}" dur="1.7s" repeatCount="indefinite"/></rect></g>
+    <g><animateTransform attributeName="transform" type="translate" values="${-fill} 0;0 0;0 0" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/>
+      <circle cx="${X + fill}" cy="${BY + BH / 2}" r="6" fill="#ffffff" filter="url(#neonsoft)"/><circle cx="${X + fill}" cy="${BY + BH / 2}" r="3.4" fill="#ffffff"/>
+      ${Array.from({ length: 8 }, (_, i) => { const a = i * 45 * Math.PI / 180, d = (i * .17).toFixed(2), col = ['#9be3ff', '#c9bfff', '#8ff0d6'][i % 3];
+        return `<circle cx="${X + fill}" cy="${BY + BH / 2}" r="1.7" fill="${col}"><animateTransform attributeName="transform" type="translate" values="0 0;${(Math.cos(a) * 20).toFixed(1)} ${(Math.sin(a) * 15).toFixed(1)}" dur="1.1s" begin="${d}s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.1s" begin="${d}s" repeatCount="indefinite"/></circle>`; }).join('')}
+    </g>
   </g>
-
-  <circle cx="${X}" cy="${BY + BH / 2}" r="7" fill="#cfe6ff" opacity=".95"><animate attributeName="cx" values="${X};${X + fill};${X + fill}" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/><animate attributeName="r" values="6;9;6" dur="1.6s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;.4;.9" dur="1.4s" repeatCount="indefinite"/></circle>
   <g font-family="'Mono Embed', Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#8d99ab">
     <text x="${X}" y="${BY + 44}">START</text>
     <text x="${W - X}" y="${BY + 44}" text-anchor="end">GRADUATION</text>

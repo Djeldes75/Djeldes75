@@ -33,7 +33,6 @@ function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal
       ${blob(w * .95, h * .05, Math.min(w, h) * .3, glow[2], -w * .06, h * .1, 12, .16)}
     </g>` : ''}
     ${inner}
-    ${sheen(id, w, h)}
   </g>
   <rect x=".5" y=".5" width="${w - 1}" height="${h - 1}" rx="${R}" fill="none" stroke="${C.line}"/>
   ${lightBorder(id, w, h)}
@@ -227,7 +226,6 @@ function coursework(only) {
       ${blob(1100, 80, 160, C.azure, -100, 60, 13, .18)}
     </g>
     ${cells.map((c, i) => (only === undefined || i === only) ? card(c, i) : '').join('')}
-    ${sheen('cw', W, H)}
   </g>
   ${mine.map(c => `<rect x="${c.x + 1}" y="${c.y + 1}" width="${cw - 2}" height="${ch - 2}" rx="${R - 1}" fill="none" stroke="url(#cwlb)" stroke-width="6" filter="url(#cwglow)" opacity=".35"/>
   <rect x="${c.x + 1}" y="${c.y + 1}" width="${cw - 2}" height="${ch - 2}" rx="${R - 1}" fill="none" stroke="url(#cwlb)" stroke-width="1.4" opacity=".9"/>`).join('')}
