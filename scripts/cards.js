@@ -28,8 +28,30 @@ function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal
     ${inner}
   </g>
   <rect x=".5" y=".5" width="${w - 1}" height="${h - 1}" rx="${R}" fill="none" stroke="${C.line}"/>
+  ${lightBorder(id, w, h)}
 </svg>
 `;
+}
+// Luz que recorre el borde de la tarjeta (con un halo suave)
+let borderN = 0;
+function lightBorder(id, w, h) {
+  const begin = (borderN++ * 0.7) % 6, dur = 7;
+  const r = (extra) => `<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${R - 1}" fill="none" pathLength="100" stroke="url(#${id}lb)" stroke-linecap="round" stroke-dasharray="16 84" ${extra}>
+    <animate attributeName="stroke-dashoffset" values="0;-100" dur="${dur}s" begin="-${begin}s" repeatCount="indefinite"/></rect>`;
+  return `<defs><linearGradient id="${id}lb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.teal}"/><stop offset=".5" stop-color="${C.azure}"/><stop offset="1" stop-color="${C.blue}"/></linearGradient>
+    <filter id="${id}lbg" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs>
+  ${r('stroke-width="5" opacity=".55" filter="url(#' + id + 'lbg)"')}${r('stroke-width="1.6"')}`;
+}
+// Partículas que suben despacio (números fijos para que siempre salga igual)
+function particles(w, h, n, seed = 7) {
+  let x = seed; const rnd = () => (x = (x * 9301 + 49297) % 233280) / 233280;
+  return Array.from({ length: n }, () => {
+    const cx = (rnd() * w).toFixed(0), r = (0.8 + rnd() * 1.8).toFixed(1), dur = (9 + rnd() * 10).toFixed(1), d = (-rnd() * dur).toFixed(1);
+    const col = rnd() < .35 ? C.teal : rnd() < .6 ? C.azure : '#ffffff';
+    return `<circle cx="${cx}" cy="${h + 10}" r="${r}" fill="${col}">
+      <animateTransform attributeName="transform" type="translate" values="0 0; ${(rnd() * 40 - 20).toFixed(0)} -${h + 30}" dur="${dur}s" begin="${d}s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.2;.7;1" dur="${dur}s" begin="${d}s" repeatCount="indefinite"/></circle>`;
+  }).join('');
 }
 const pill = (x, y, t, color = C.soft) => { const w = 18 + t.length * 8.2;
   return `<g><rect x="${x}" y="${y}" width="${w}" height="28" rx="14" fill="#ffffff" fill-opacity=".05" stroke="${C.line}"/>
@@ -43,9 +65,13 @@ function hero() {
   const w = 1280, h = 340;
   const typed = 'data centers · video games · apps I actually use';
   return frame('h', w, h, `
+  ${particles(w, h, 46)}
   <g font-family="${SANS}">
     <text x="64" y="92" font-family="${MONO}" font-size="14" letter-spacing="3" fill="${C.teal}">SYSTEMS ENGINEERING · INTEC</text>
-    <text x="60" y="176" font-size="82" font-weight="800" letter-spacing="-2.5" fill="${C.ink}">Dominique Jeldes</text>
+    <defs><linearGradient id="namegrad" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="760" y2="0">
+      <stop offset="0" stop-color="${C.ink}"/><stop offset=".42" stop-color="${C.ink}"/><stop offset=".5" stop-color="#bfe6ff"/><stop offset=".58" stop-color="${C.ink}"/><stop offset="1" stop-color="${C.ink}"/>
+      <animateTransform attributeName="gradientTransform" type="translate" values="-900 0; 900 0" dur="5s" repeatCount="indefinite"/></linearGradient></defs>
+    <text x="60" y="176" font-size="82" font-weight="800" letter-spacing="-2.5" fill="url(#namegrad)">Dominique Jeldes</text>
     <clipPath id="type"><rect x="64" y="200" width="0" height="40"><animate attributeName="width" values="0;760;760;0" keyTimes="0;.45;.9;1" dur="9s" repeatCount="indefinite"/></rect></clipPath>
     <text x="64" y="228" font-size="24" fill="${C.soft}" clip-path="url(#type)">${esc(typed)}</text>
 
@@ -81,6 +107,7 @@ function plana() {
     <rect x="-2" y="6" width="154" height="246" rx="6" fill="#000" opacity=".35"/>
     <image href="${src}" xlink:href="${src}" width="150" height="240" preserveAspectRatio="xMidYMid slice"/></g></g>`;
   return frame('p', w, h, `
+  ${particles(w, h, 22, 13)}
   <g font-family="${SANS}">
     <text x="64" y="80" font-family="${MONO}" font-size="14" letter-spacing="3" fill="${C.teal}">MY OWN APP</text>
     <text x="60" y="150" font-size="66" font-weight="800" letter-spacing="-2" fill="${C.ink}">Plana</text>

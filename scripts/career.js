@@ -25,6 +25,10 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
     <circle cx="80" cy="0" r="170" fill="#0b2d63" filter="url(#blur)"><animateTransform attributeName="transform" type="translate" values="0 0;90 30;0 0" dur="14s" repeatCount="indefinite"/></circle>
   </g>
   <rect x=".5" y=".5" width="${W - 1}" height="${H - 1}" rx="20" fill="none" stroke="#263142"/>
+  <defs><linearGradient id="lb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4bd6b4"/><stop offset=".5" stop-color="#3aa0ff"/><stop offset="1" stop-color="#1e6bff"/></linearGradient>
+    <filter id="lbg" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs>
+  <rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="19" fill="none" pathLength="100" stroke="url(#lb)" stroke-width="5" opacity=".55" filter="url(#lbg)" stroke-dasharray="16 84"><animate attributeName="stroke-dashoffset" values="0;-100" dur="7s" begin="-2s" repeatCount="indefinite"/></rect>
+  <rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="19" fill="none" pathLength="100" stroke="url(#lb)" stroke-width="1.6" stroke-dasharray="16 84"><animate attributeName="stroke-dashoffset" values="0;-100" dur="7s" begin="-2s" repeatCount="indefinite"/></rect>
   <g font-family="Segoe UI, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
     <text x="${X}" y="58" font-size="14" letter-spacing="3" fill="#4bd6b4" font-family="ui-monospace, Consolas, Menlo, monospace">MY DEGREE</text>
     <text x="${X}" y="104" font-size="38" font-weight="800" fill="#eef3fb">${esc(c.degree)}<tspan fill="#8d99ab" font-weight="600" font-size="26"> · ${esc(c.school)}</tspan></text>
