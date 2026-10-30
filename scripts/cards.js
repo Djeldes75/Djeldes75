@@ -33,22 +33,29 @@ function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal
       ${blob(w * .95, h * .05, Math.min(w, h) * .3, glow[2], -w * .06, h * .1, 12, .16)}
     </g>` : ''}
     ${inner}
+    ${sheen(id, w, h)}
   </g>
   <rect x=".5" y=".5" width="${w - 1}" height="${h - 1}" rx="${R}" fill="none" stroke="${C.line}"/>
   ${lightBorder(id, w, h)}
 </svg>
 `;
 }
-// Luz que recorre el borde de la tarjeta (con un halo suave)
+// Borde con degradado fijo (verde → azure → azul oscuro) y un halo suave
 function lightBorder(id, w, h) {
-  // Todo el borde brilla con un degradado (verde → azure → azul oscuro) que gira despacio.
-  // Misma duración en todas las tarjetas, así se ven al mismo ritmo.
-  const grad = `<linearGradient id="${id}lb" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="${C.teal}"/><stop offset=".35" stop-color="${C.azure}"/><stop offset=".65" stop-color="${C.navy}" stop-opacity=".25"/><stop offset="1" stop-color="${C.teal}"/>
-      <animateTransform attributeName="gradientTransform" type="rotate" values="0 .5 .5;360 .5 .5" dur="8s" repeatCount="indefinite"/></linearGradient>`;
+  const grad = `<linearGradient id="${id}lb" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${C.teal}"/><stop offset=".4" stop-color="${C.azure}"/><stop offset="1" stop-color="${C.navy}" stop-opacity=".5"/></linearGradient>`;
   const rect = extra => `<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${R - 1}" fill="none" stroke="url(#${id}lb)" ${extra}/>`;
   return `<defs>${grad}<filter id="${id}lbg" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
-  ${rect(`stroke-width="6" filter="url(#${id}lbg)" opacity=".45"`)}${rect('stroke-width="1.5"')}`;
+  ${rect(`stroke-width="6" filter="url(#${id}lbg)" opacity=".35"`)}${rect('stroke-width="1.4" opacity=".9"')}`;
+}
+// Reflejo de cristal: una franja de luz diagonal cruza la tarjeta cada 7 s.
+// Todas las tarjetas usan el mismo ciclo, así pasan juntas.
+const SHEEN_CYCLE = 7;
+function sheen(id, w, h, span = w) {
+  const band = 220;
+  return `<defs><linearGradient id="${id}sh" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#cfe6ff" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+  <g transform="skewX(-22)"><rect x="${-band - h}" y="-20" width="${band}" height="${h + 40}" fill="url(#${id}sh)">
+    <animateTransform attributeName="transform" type="translate" values="0 0; ${span + band + 2 * h} 0; ${span + band + 2 * h} 0" keyTimes="0;.4;1" dur="${SHEEN_CYCLE}s" calcMode="spline" keySplines=".45 0 .55 1;0 0 1 1" repeatCount="indefinite"/></rect></g>`;
 }
 // Partículas que suben despacio (números fijos para que siempre salga igual)
 function particles(w, h, n, seed = 7) {
@@ -161,30 +168,66 @@ function plana() {
   ${pg(pages[0], 790, 70, -8, -8, 6)}${pg(pages[2], 1050, 56, 7, -10, 7)}${pg(pages[1], 920, 40, -1, -12, 5)}`);
 }
 
-// ---------- 4. Materias ----------
-const DIFF = { hard: ['Hard', C.coral, 3], medium: ['Medium', C.amber, 2], easy: ['Easy', C.teal, 1] };
-function course(id, title, subtitle, desc, tags, diff) {
-  const w = 620, h = 200, [dl, dc, dn] = DIFF[diff];
-  const dots = [0, 1, 2].map(i => `<circle cx="${w - 150 + i * 14}" cy="44" r="4.5" fill="${i < dn ? dc : '#2c3746'}"/>`).join('');
-  return frame(id, w, h, `
-  <rect x="0" y="0" width="5" height="${h}" fill="${dc}" opacity=".9"><animate attributeName="opacity" values=".9;.45;.9" dur="3s" repeatCount="indefinite"/></rect>
-  <g font-family="${SANS}">
-    <text x="34" y="50" font-family="${MONO}" font-size="12" letter-spacing="2.5" fill="${C.soft}">${esc(subtitle.toUpperCase())}</text>
-    ${dots}<text x="${w - 34}" y="49" text-anchor="end" font-size="13" font-weight="700" fill="${dc}">${dl}</text>
-    <text x="32" y="94" font-size="32" font-weight="800" letter-spacing="-.5" fill="${C.ink}">${esc(title)}</text>
-    <text x="34" y="126" font-size="16" fill="${C.soft}">${esc(desc)}</text>
-    ${pills(34, 146, tags)}
-  </g>`, { glow: [C.navy, dc, C.azure] });
-}
-function locked() {
-  const w = 620, h = 200;
-  return frame('lk', w, h, `
-  <g opacity=".5">${Array.from({ length: 40 }, (_, i) => `<path d="M${i * 28 - 200} ${h} L${i * 28} 0" stroke="#1d2532" stroke-width="12"/>`).join('')}</g>
-  <rect x="200" y="66" width="68" height="68" rx="18" fill="#0f141c" stroke="${C.line}"/>
-  <g transform="translate(234 100)" fill="none" stroke="${C.azure}" stroke-width="2.6" stroke-linecap="round"><rect x="-11" y="-3" width="22" height="16" rx="3"/><path d="M-6.5-3v-5a6.5 6.5 0 0 1 13 0v5"/>
-    <animateTransform attributeName="transform" type="rotate" values="0;-6;6;0" dur="2.5s" repeatCount="indefinite" additive="sum"/></g>
-  <text x="292" y="98" font-family="${SANS}" font-size="28" font-weight="800" fill="#62738f" letter-spacing="3">???</text>
-  <text x="292" y="124" font-family="${MONO}" font-size="12" letter-spacing="2.5" fill="${C.soft}">NEXT · A GAME · SOON</text>`, { aurora: false });
+// ---------- 4. Materias (una sola imagen, 2 × 3) ----------
+const COURSES = [
+  ['software-dev-lab-3', 'Software Development · Lab 3', '15 projects: services, messaging, sockets, reports.', ['C#', 'ASP.NET Core', 'NServiceBus', 'SQL Server']],
+  ['dsa-2', 'Data Structures & Algorithms 2', 'Graphs, backtracking, Minimax and a maze game.', ['C++', 'Python', 'Tkinter']],
+  ['software-dev-2', 'Software Development 2', 'Sales and purchasing system, stored procedures.', ['C#', 'SQL Server']],
+  ['dsa-1', 'Data Structures & Algorithms 1', 'Stacks, queues, trees and hash tables.', ['C++', 'Visual Studio']],
+  ['software-dev-1', 'Software Development 1', 'Inventory and library systems.', ['C#', 'Windows Forms', 'SQL Server']],
+];
+function coursework() {
+  const W = 1280, cw = 632, ch = 200, g = 16, H = 3 * ch + 2 * g, P = 12;
+  const cells = [0, 1, 2, 3, 4, 5].map(i => ({ x: (i % 2) * (cw + g), y: Math.floor(i / 2) * (ch + g) }));
+  const union = cells.map(c => `<rect x="${c.x}" y="${c.y}" width="${cw}" height="${ch}" rx="${R}"/>`).join('');
+  const blob = (cx, cy, r, color, dx, dy, dur, op) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="${op}">
+      <animateTransform attributeName="transform" type="translate" values="0 0; ${dx} ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>`;
+  const card = (c, i) => {
+    if (i === 5) return `<g transform="translate(${c.x} ${c.y})">
+      <rect width="${cw}" height="${ch}" rx="${R}" fill="#0b1017" fill-opacity=".86"/>
+      <g clip-path="url(#cwcell)" opacity=".45">${Array.from({ length: 40 }, (_, k) => `<path d="M${k * 28 - 200} ${ch} L${k * 28} 0" stroke="#1d2532" stroke-width="12"/>`).join('')}</g>
+      <rect x="206" y="66" width="68" height="68" rx="18" fill="#0f141c" stroke="${C.line}"/>
+      <g transform="translate(240 100)" fill="none" stroke="${C.azure}" stroke-width="2.6" stroke-linecap="round"><rect x="-11" y="-3" width="22" height="16" rx="3"/><path d="M-6.5-3v-5a6.5 6.5 0 0 1 13 0v5"/>
+        <animateTransform attributeName="transform" type="rotate" values="0;-6;6;0" dur="2.5s" repeatCount="indefinite" additive="sum"/></g>
+      <text x="298" y="98" font-family="${SANS}" font-size="28" font-weight="800" fill="#62738f" letter-spacing="3">???</text>
+      <text x="298" y="124" font-family="${MONO}" font-size="12" letter-spacing="2.5" fill="${C.soft}">NEXT · A GAME · SOON</text></g>`;
+    const [title, sub, desc, tags] = COURSES[i];
+    return `<g transform="translate(${c.x} ${c.y})">
+      <rect width="${cw}" height="${ch}" rx="${R}" fill="#0b1017" fill-opacity=".55"/>
+      <g font-family="${SANS}">
+        <text x="34" y="50" font-family="${MONO}" font-size="12" letter-spacing="2.5" fill="${C.soft}">${esc(sub.toUpperCase())}</text>
+        <text x="32" y="94" font-size="32" font-weight="800" letter-spacing="-.5" fill="${C.ink}">${esc(title)}</text>
+        <text x="34" y="126" font-size="16" fill="${C.soft}">${esc(desc)}</text>
+        ${pills(34, 146, tags)}
+      </g></g>`;
+  };
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W + 2 * P}" height="${H + 2 * P}" viewBox="${-P} ${-P} ${W + 2 * P} ${H + 2 * P}" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+  ${FONT_CSS}
+  <defs>
+    <clipPath id="cwall">${union}</clipPath>
+    <clipPath id="cwcell"><rect width="${cw}" height="${ch}" rx="${R}"/></clipPath>
+    <linearGradient id="cwbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.bg1}"/><stop offset="1" stop-color="${C.bg2}"/></linearGradient>
+    <filter id="cwblur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="70"/></filter>
+    <linearGradient id="cwlb" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
+      <stop offset="0" stop-color="${C.teal}"/><stop offset=".45" stop-color="${C.azure}"/><stop offset="1" stop-color="${C.navy}"/></linearGradient>
+    <filter id="cwglow" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="3.5"/></filter>
+  </defs>
+  <g clip-path="url(#cwall)">
+    <rect width="${W}" height="${H}" fill="url(#cwbg)"/>
+    <g filter="url(#cwblur)">
+      ${blob(120, 60, 260, C.navy, 140, 80, 16, .95)}
+      ${blob(1150, 420, 240, C.navy, -160, -60, 18, .9)}
+      ${blob(640, 330, 200, C.azure, 120, -40, 14, .22)}
+      ${blob(250, 560, 180, C.teal, 90, -50, 15, .13)}
+      ${blob(1100, 80, 160, C.azure, -100, 60, 13, .18)}
+    </g>
+    ${cells.map(card).join('')}
+    ${sheen('cw', W, H)}
+  </g>
+  ${cells.map(c => `<rect x="${c.x + 1}" y="${c.y + 1}" width="${cw - 2}" height="${ch - 2}" rx="${R - 1}" fill="none" stroke="url(#cwlb)" stroke-width="6" filter="url(#cwglow)" opacity=".35"/>
+  <rect x="${c.x + 1}" y="${c.y + 1}" width="${cw - 2}" height="${ch - 2}" rx="${R - 1}" fill="none" stroke="url(#cwlb)" stroke-width="1.4" opacity=".9"/>`).join('')}
+</svg>
+`;
 }
 
 // ---------- 5. Herramientas ----------
@@ -203,12 +246,7 @@ const out = {
   'btn-youtube.svg': button('VIDEOS ON YOUTUBE', '@qDothy', '#ff2d2d', ICON.play),
   'btn-linkedin.svg': button('WORK · LINKEDIN', 'dominiquejeldes', '#0a66c2', ICON.case),
   'plana.svg': plana(),
-  'c-lab3.svg': course('c1', 'software-dev-lab-3', 'Software Development · Lab 3', '15 projects: services, messaging, sockets, reports.', ['C#', 'ASP.NET Core', 'NServiceBus', 'SQL Server'], 'hard'),
-  'c-dsa2.svg': course('c2', 'dsa-2', 'Data Structures & Algorithms 2', 'Graphs, backtracking, Minimax and a maze game.', ['C++', 'Python', 'Tkinter'], 'hard'),
-  'c-sd2.svg': course('c3', 'software-dev-2', 'Software Development 2', 'Sales and purchasing system, stored procedures.', ['C#', 'SQL Server'], 'medium'),
-  'c-dsa1.svg': course('c4', 'dsa-1', 'Data Structures & Algorithms 1', 'Stacks, queues, trees and hash tables.', ['C++', 'Visual Studio'], 'medium'),
-  'c-sd1.svg': course('c5', 'software-dev-1', 'Software Development 1', 'Inventory and library systems.', ['C#', 'Windows Forms', 'SQL Server'], 'easy'),
-  'c-locked.svg': locked(),
+  'coursework.svg': coursework(),
   'tools.svg': tools(),
 };
 for (const [f, s] of Object.entries(out)) fs.writeFileSync(path.join(A, f), s);
