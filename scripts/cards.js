@@ -33,11 +33,12 @@ function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal
 `;
 }
 // Luz que recorre el borde de la tarjeta (con un halo suave)
-let borderN = 0;
 function lightBorder(id, w, h) {
-  const begin = (borderN++ * 0.7) % 6, dur = 7;
-  const r = (extra) => `<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${R - 1}" fill="none" pathLength="100" stroke="url(#${id}lb)" stroke-linecap="round" stroke-dasharray="16 84" ${extra}>
-    <animate attributeName="stroke-dashoffset" values="0;-100" dur="${dur}s" begin="-${begin}s" repeatCount="indefinite"/></rect>`;
+  // Misma velocidad en todas las tarjetas (px por segundo) y todas empiezan juntas,
+  // así la luz se ve sincronizada aunque las tarjetas tengan tamaños distintos.
+  const per = 2 * (w + h) - (8 - 2 * Math.PI) * (R - 1), dash = 170, speed = 330, dur = (per / speed).toFixed(2);
+  const r = (extra) => `<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${R - 1}" fill="none" stroke="url(#${id}lb)" stroke-linecap="round" stroke-dasharray="${dash} ${(per - dash).toFixed(1)}" ${extra}>
+    <animate attributeName="stroke-dashoffset" values="0;-${per.toFixed(1)}" dur="${dur}s" repeatCount="indefinite"/></rect>`;
   return `<defs><linearGradient id="${id}lb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.teal}"/><stop offset=".5" stop-color="${C.azure}"/><stop offset="1" stop-color="${C.blue}"/></linearGradient>
     <filter id="${id}lbg" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs>
   ${r('stroke-width="5" opacity=".55" filter="url(#' + id + 'lbg)"')}${r('stroke-width="1.6"')}`;
