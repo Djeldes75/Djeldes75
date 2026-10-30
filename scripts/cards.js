@@ -1,0 +1,145 @@
+// Genera las tarjetas animadas (SVG) del perfil. Uso: node scripts/cards.js
+// Las animaciones usan SMIL, que GitHub muestra dentro de <img>.
+const fs = require('fs'), path = require('path');
+const A = path.join(__dirname, '..', 'assets');
+const C = { bg1:'#131a24', bg2:'#0c1118', ink:'#eef3fb', soft:'#8d99ab', line:'#263142', navy:'#0b2d63', azure:'#3aa0ff', blue:'#1e6bff', teal:'#4bd6b4', amber:'#f0b45a', coral:'#ff7a59', violet:'#9b8cff' };
+const SANS = 'Segoe UI, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif';
+const MONO = 'ui-monospace, SFMono-Regular, Consolas, Menlo, monospace';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const R = 20; // esquinas redondeadas
+
+// Fondo: tarjeta redondeada (lo de afuera queda transparente) + "aurora" que se mueve despacio
+function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal] } = {}) {
+  const blob = (cx, cy, r, color, dx, dy, dur, op) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="${op}">
+      <animateTransform attributeName="transform" type="translate" values="0 0; ${dx} ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <defs>
+    <linearGradient id="${id}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.bg1}"/><stop offset="1" stop-color="${C.bg2}"/></linearGradient>
+    <clipPath id="${id}clip"><rect width="${w}" height="${h}" rx="${R}"/></clipPath>
+    <filter id="${id}blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${Math.round(Math.min(w, h) / 5)}"/></filter>
+  </defs>
+  <g clip-path="url(#${id}clip)">
+    <rect width="${w}" height="${h}" fill="url(#${id}bg)"/>
+    ${aurora ? `<g filter="url(#${id}blur)">
+      ${blob(w * .08, h * .1, Math.min(w, h) * .55, glow[0], w * .08, h * .12, 14, .95)}
+      ${blob(w * .7, h * 1.05, Math.min(w, h) * .45, glow[1], -w * .1, -h * .1, 17, .28)}
+      ${blob(w * .95, h * .05, Math.min(w, h) * .3, glow[2], -w * .06, h * .1, 12, .16)}
+    </g>` : ''}
+    ${inner}
+  </g>
+  <rect x=".5" y=".5" width="${w - 1}" height="${h - 1}" rx="${R}" fill="none" stroke="${C.line}"/>
+</svg>
+`;
+}
+const pill = (x, y, t, color = C.soft) => { const w = 18 + t.length * 8.2;
+  return `<g><rect x="${x}" y="${y}" width="${w}" height="28" rx="14" fill="#ffffff" fill-opacity=".05" stroke="${C.line}"/>
+  <text x="${x + w / 2}" y="${y + 19}" text-anchor="middle" font-family="${SANS}" font-size="13" font-weight="600" fill="#d5dde9">${esc(t)}</text></g>`; };
+const pills = (x, y, list) => { let cx = x; return list.map(t => { const s = pill(cx, y, t); cx += 18 + t.length * 8.2 + 8; return s; }).join(''); };
+const pulse = (cx, cy, color) => `<circle cx="${cx}" cy="${cy}" r="5" fill="${color}"/><circle cx="${cx}" cy="${cy}" r="5" fill="none" stroke="${color}" stroke-width="2">
+  <animate attributeName="r" values="5;13" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.8s" repeatCount="indefinite"/></circle>`;
+
+// ---------- 1. Portada ----------
+function hero() {
+  const w = 1280, h = 340;
+  const typed = 'data centers · video games · apps I actually use';
+  return frame('h', w, h, `
+  <g font-family="${SANS}">
+    <text x="64" y="92" font-family="${MONO}" font-size="14" letter-spacing="3" fill="${C.teal}">SYSTEMS ENGINEERING · INTEC</text>
+    <text x="60" y="176" font-size="82" font-weight="800" letter-spacing="-2.5" fill="${C.ink}">Dominique Jeldes</text>
+    <clipPath id="type"><rect x="64" y="200" width="0" height="40"><animate attributeName="width" values="0;760;760;0" keyTimes="0;.45;.9;1" dur="9s" repeatCount="indefinite"/></rect></clipPath>
+    <text x="64" y="228" font-size="24" fill="${C.soft}" clip-path="url(#type)">${esc(typed)}</text>
+
+    ${pulse(72, 282, C.teal)}
+    <text x="90" y="288" font-size="16" font-weight="600" fill="#cfd8e6">online · streaming on Twitch &amp; YouTube</text>
+  </g>`);
+}
+
+// ---------- 2. Botones ----------
+function button(label, handle, color, icon) {
+  const w = 420, h = 104;
+  return frame('b' + handle.replace(/\W/g, ''), w, h, `
+  <rect x="26" y="26" width="52" height="52" rx="15" fill="${color}"/>
+  <rect x="26" y="26" width="52" height="52" rx="15" fill="none" stroke="${color}" stroke-width="2"><animate attributeName="stroke-opacity" values=".6;0" dur="2.2s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="scale" values="1;1.18" dur="2.2s" repeatCount="indefinite" additive="sum"/></rect>
+  <g transform="translate(52 52)">${icon}</g>
+  <text x="100" y="47" font-family="${MONO}" font-size="12" letter-spacing="2" fill="${C.soft}">${esc(label)}</text>
+  <text x="100" y="76" font-family="${SANS}" font-size="23" font-weight="700" fill="${C.ink}">${esc(handle)}</text>
+  <text x="${w - 34}" y="62" text-anchor="end" font-family="${SANS}" font-size="22" fill="${C.soft}">→</text>`, { glow: [C.navy, color, C.azure] });
+}
+const ICON = {
+  live: `<circle r="4.5" fill="#fff"/><path d="M-7-7a10 10 0 0 0 0 14M7-7a10 10 0 0 1 0 14" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+  play: `<path d="M-6-9 L10 0 L-6 9Z" fill="#fff"/>`,
+  case: `<g fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><rect x="-10" y="-6" width="20" height="14" rx="2.5"/><path d="M-4-6v-3h8v3M-10 0h20"/></g>`,
+};
+
+// ---------- 3. Plana ----------
+function plana() {
+  const w = 1280, h = 330;
+  const pages = JSON.parse(fs.readFileSync('/tmp/pages.json')).light;
+  const pg = (src, x, y, rot, dy, dur) => `<g transform="translate(${x} ${y}) rotate(${rot})"><g>
+    <animateTransform attributeName="transform" type="translate" values="0 0; 0 ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/>
+    <rect x="-2" y="6" width="154" height="246" rx="6" fill="#000" opacity=".35"/>
+    <image href="${src}" xlink:href="${src}" width="150" height="240" preserveAspectRatio="xMidYMid slice"/></g></g>`;
+  return frame('p', w, h, `
+  <g font-family="${SANS}">
+    <text x="64" y="80" font-family="${MONO}" font-size="14" letter-spacing="3" fill="${C.teal}">MY OWN APP</text>
+    <text x="60" y="150" font-size="66" font-weight="800" letter-spacing="-2" fill="${C.ink}">Plana</text>
+    <text x="64" y="194" font-size="20" fill="${C.soft}">Notebook templates for Samsung Notes,</text>
+    <text x="64" y="222" font-size="20" fill="${C.soft}">sized to the real screen of each Galaxy Tab.</text>
+    ${pills(64, 248, ['Vector PDF', 'Works offline', 'Installable', 'EN · ES · LT'])}
+  </g>
+  ${pg(pages[0], 790, 70, -8, -8, 6)}${pg(pages[2], 1050, 56, 7, -10, 7)}${pg(pages[1], 920, 40, -1, -12, 5)}`);
+}
+
+// ---------- 4. Materias ----------
+const DIFF = { hard: ['Hard', C.coral, 3], medium: ['Medium', C.amber, 2], easy: ['Easy', C.teal, 1] };
+function course(id, title, subtitle, desc, tags, diff) {
+  const w = 620, h = 200, [dl, dc, dn] = DIFF[diff];
+  const dots = [0, 1, 2].map(i => `<circle cx="${w - 150 + i * 14}" cy="44" r="4.5" fill="${i < dn ? dc : '#2c3746'}"/>`).join('');
+  return frame(id, w, h, `
+  <rect x="0" y="0" width="5" height="${h}" fill="${dc}" opacity=".9"><animate attributeName="opacity" values=".9;.45;.9" dur="3s" repeatCount="indefinite"/></rect>
+  <g font-family="${SANS}">
+    <text x="34" y="50" font-family="${MONO}" font-size="12" letter-spacing="2.5" fill="${C.soft}">${esc(subtitle.toUpperCase())}</text>
+    ${dots}<text x="${w - 34}" y="49" text-anchor="end" font-size="13" font-weight="700" fill="${dc}">${dl}</text>
+    <text x="32" y="94" font-size="32" font-weight="800" letter-spacing="-.5" fill="${C.ink}">${esc(title)}</text>
+    <text x="34" y="126" font-size="16" fill="${C.soft}">${esc(desc)}</text>
+    ${pills(34, 146, tags)}
+  </g>`, { glow: [C.navy, dc, C.azure] });
+}
+function locked() {
+  const w = 620, h = 200;
+  return frame('lk', w, h, `
+  <g opacity=".5">${Array.from({ length: 40 }, (_, i) => `<path d="M${i * 28 - 200} ${h} L${i * 28} 0" stroke="#1d2532" stroke-width="12"/>`).join('')}</g>
+  <rect x="200" y="66" width="68" height="68" rx="18" fill="#0f141c" stroke="${C.line}"/>
+  <g transform="translate(234 100)" fill="none" stroke="${C.azure}" stroke-width="2.6" stroke-linecap="round"><rect x="-11" y="-3" width="22" height="16" rx="3"/><path d="M-6.5-3v-5a6.5 6.5 0 0 1 13 0v5"/>
+    <animateTransform attributeName="transform" type="rotate" values="0;-6;6;0" dur="2.5s" repeatCount="indefinite" additive="sum"/></g>
+  <text x="292" y="98" font-family="${SANS}" font-size="28" font-weight="800" fill="#62738f" letter-spacing="3">???</text>
+  <text x="292" y="124" font-family="${MONO}" font-size="12" letter-spacing="2.5" fill="${C.soft}">NEXT · A GAME · SOON</text>`, { aurora: false });
+}
+
+// ---------- 5. Herramientas ----------
+function tools() {
+  const w = 1280, h = 230, list = ['C#', '.NET', 'C++', 'Python', 'JavaScript', 'SQL Server', 'Git', 'GitHub Actions', 'Visual Studio', 'DaVinci Resolve', 'OBS', '+'];
+  const cw = 182, ch = 70, gx = 16, x0 = (w - (6 * cw + 5 * gx)) / 2;
+  return frame('t', w, h, list.map((t, i) => { const x = x0 + (i % 6) * (cw + gx), y = 36 + Math.floor(i / 6) * (ch + 18);
+    return `<g><rect x="${x}" y="${y}" width="${cw}" height="${ch}" rx="14" fill="#ffffff" fill-opacity=".03" stroke="${C.line}"/>
+      <rect x="${x}" y="${y}" width="${cw}" height="${ch}" rx="14" fill="none" stroke="${C.azure}" stroke-opacity="0"><animate attributeName="stroke-opacity" values="0;.7;0" dur="6s" begin="${(i * .5).toFixed(1)}s" repeatCount="indefinite"/></rect>
+      <text x="${x + cw / 2}" y="${y + 42}" text-anchor="middle" font-family="${SANS}" font-size="${t === '+' ? 26 : 17}" font-weight="700" fill="${t === '+' ? C.soft : '#e3eaf4'}">${esc(t)}</text></g>`; }).join(''));
+}
+
+const out = {
+  'hero.svg': hero(),
+  'btn-twitch.svg': button('STREAMING ON TWITCH', 'qdothy', '#9146ff', ICON.live),
+  'btn-youtube.svg': button('VIDEOS ON YOUTUBE', '@qDothy', '#ff2d2d', ICON.play),
+  'btn-linkedin.svg': button('WORK · LINKEDIN', 'dominiquejeldes', '#0a66c2', ICON.case),
+  'plana.svg': plana(),
+  'c-lab3.svg': course('c1', 'software-dev-lab-3', 'Software Development · Lab 3', '15 projects: services, messaging, sockets, reports.', ['C#', 'ASP.NET Core', 'NServiceBus', 'SQL Server'], 'hard'),
+  'c-dsa2.svg': course('c2', 'dsa-2', 'Data Structures & Algorithms 2', 'Graphs, backtracking, Minimax and a maze game.', ['C++', 'Python', 'Tkinter'], 'hard'),
+  'c-sd2.svg': course('c3', 'software-dev-2', 'Software Development 2', 'Sales and purchasing system, stored procedures.', ['C#', 'SQL Server'], 'medium'),
+  'c-dsa1.svg': course('c4', 'dsa-1', 'Data Structures & Algorithms 1', 'Stacks, queues, trees and hash tables.', ['C++', 'Visual Studio'], 'medium'),
+  'c-sd1.svg': course('c5', 'software-dev-1', 'Software Development 1', 'Inventory and library systems.', ['C#', 'Windows Forms', 'SQL Server'], 'easy'),
+  'c-locked.svg': locked(),
+  'tools.svg': tools(),
+};
+for (const [f, s] of Object.entries(out)) fs.writeFileSync(path.join(A, f), s);
+console.log('ok:', Object.keys(out).join(', '));

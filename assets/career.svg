@@ -1,23 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="220" viewBox="0 0 1280 220" role="img" aria-label="Systems Engineering progress: 64%">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#151b24"/><stop offset="1" stop-color="#0e1218"/></linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1"><stop offset="0" stop-color="#0b2d63" stop-opacity=".9"/><stop offset="1" stop-color="#0b2d63" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#131a24"/><stop offset="1" stop-color="#0c1118"/></linearGradient>
     <linearGradient id="bar" x1="0" x2="1"><stop offset="0" stop-color="#1e6bff"/><stop offset=".7" stop-color="#3aa0ff"/><stop offset="1" stop-color="#4bd6b4"/></linearGradient>
+    <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <clipPath id="card"><rect width="1280" height="220" rx="20"/></clipPath>
+    <clipPath id="fillclip"><rect x="56" y="142" width="748" height="18" rx="9"><animate attributeName="width" from="0" to="748" dur="1.6s" fill="freeze" calcMode="spline" keySplines=".2 .8 .2 1" keyTimes="0;1"/></rect></clipPath>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="50"/></filter>
     <filter id="soft" x="-20%" y="-200%" width="140%" height="500%"><feGaussianBlur stdDeviation="6"/></filter>
   </defs>
-  <rect width="1280" height="220" rx="16" fill="url(#bg)"/>
-  <ellipse cx="0" cy="0" rx="520" ry="260" fill="url(#glow)"/>
-  <rect x=".5" y=".5" width="1279" height="219" rx="16" fill="none" stroke="#2a3442"/>
-  <g font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
-    <text x="56" y="58" font-size="14" letter-spacing="3" fill="#4bd6b4" font-family="Consolas, Menlo, monospace">◆ MAIN QUEST · DEGREE</text>
-    <text x="56" y="104" font-size="38" font-weight="800" fill="#eef3fb">Systems Engineering<tspan fill="#8b97a8" font-weight="600" font-size="26"> · INTEC</tspan></text>
-    <text x="1224" y="104" font-size="54" font-weight="800" text-anchor="end" fill="#3aa0ff">64<tspan font-size="30" fill="#8b97a8">%</tspan></text>
+  <g clip-path="url(#card)">
+    <rect width="1280" height="220" fill="url(#bg)"/>
+    <circle cx="80" cy="0" r="170" fill="#0b2d63" filter="url(#blur)"><animateTransform attributeName="transform" type="translate" values="0 0;90 30;0 0" dur="14s" repeatCount="indefinite"/></circle>
+  </g>
+  <rect x=".5" y=".5" width="1279" height="219" rx="20" fill="none" stroke="#263142"/>
+  <g font-family="Segoe UI, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+    <text x="56" y="58" font-size="14" letter-spacing="3" fill="#4bd6b4" font-family="ui-monospace, Consolas, Menlo, monospace">MY DEGREE</text>
+    <text x="56" y="104" font-size="38" font-weight="800" fill="#eef3fb">Systems Engineering<tspan fill="#8d99ab" font-weight="600" font-size="26"> · INTEC</tspan></text>
+    <text x="1224" y="104" font-size="54" font-weight="800" text-anchor="end" fill="#3aa0ff">64<tspan font-size="30" fill="#8d99ab">%</tspan></text>
   </g>
   <rect x="56" y="142" width="1168" height="18" rx="9" fill="#1d2430"/>
-  <rect x="56" y="140" width="748" height="22" rx="10" fill="url(#bar)" opacity=".55" filter="url(#soft)"/>
-  <rect x="56" y="142" width="748" height="18" rx="9" fill="url(#bar)"/>
-  <rect x="114" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="173" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="231" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="290" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="348" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="406" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="465" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="523" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="582" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="640" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="698" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="757" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="815" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="874" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="932" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="990" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="1049" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="1107" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/><rect x="1166" y="142" width="2" height="18" fill="#0e1218" opacity=".9"/>
-  <g font-family="Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#8b97a8">
+  <g clip-path="url(#fillclip)">
+    <rect x="56" y="142" width="748" height="18" fill="url(#bar)"/>
+    <rect x="-144" y="142" width="200" height="18" fill="url(#shine)"><animate attributeName="x" values="-144;804" dur="2.8s" begin="1.6s" repeatCount="indefinite"/></rect>
+  </g>
+  <rect x="114" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="173" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="231" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="290" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="348" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="406" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="465" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="523" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="582" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="640" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="698" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="757" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="815" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="874" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="932" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="990" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="1049" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="1107" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/><rect x="1166" y="142" width="2" height="18" fill="#0c1118" opacity=".9"/>
+  <g font-family="ui-monospace, Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#8d99ab">
     <text x="56" y="192">START</text>
     <text x="1224" y="192" text-anchor="end">GRADUATION</text>
   </g>

@@ -9,27 +9,34 @@ const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;'
 const W = 1280, H = 220, X = 56, BW = W - 2 * X, BY = 142, BH = 18;
 const fill = Math.round(BW * p / 100);
 const ticks = Array.from({ length: 19 }, (_, i) => X + Math.round(BW * (i + 1) / 20))
-  .map(x => `<rect x="${x}" y="${BY}" width="2" height="${BH}" fill="#0e1218" opacity=".9"/>`).join('');
+  .map(x => `<rect x="${x}" y="${BY}" width="2" height="${BH}" fill="#0c1118" opacity=".9"/>`).join('');
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.degree)} progress: ${p}%">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#151b24"/><stop offset="1" stop-color="#0e1218"/></linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1"><stop offset="0" stop-color="#0b2d63" stop-opacity=".9"/><stop offset="1" stop-color="#0b2d63" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#131a24"/><stop offset="1" stop-color="#0c1118"/></linearGradient>
     <linearGradient id="bar" x1="0" x2="1"><stop offset="0" stop-color="#1e6bff"/><stop offset=".7" stop-color="#3aa0ff"/><stop offset="1" stop-color="#4bd6b4"/></linearGradient>
+    <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <clipPath id="card"><rect width="${W}" height="${H}" rx="20"/></clipPath>
+    <clipPath id="fillclip"><rect x="${X}" y="${BY}" width="${fill}" height="${BH}" rx="9"><animate attributeName="width" from="0" to="${fill}" dur="1.6s" fill="freeze" calcMode="spline" keySplines=".2 .8 .2 1" keyTimes="0;1"/></rect></clipPath>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="50"/></filter>
     <filter id="soft" x="-20%" y="-200%" width="140%" height="500%"><feGaussianBlur stdDeviation="6"/></filter>
   </defs>
-  <rect width="${W}" height="${H}" rx="16" fill="url(#bg)"/>
-  <ellipse cx="0" cy="0" rx="520" ry="260" fill="url(#glow)"/>
-  <rect x=".5" y=".5" width="${W - 1}" height="${H - 1}" rx="16" fill="none" stroke="#2a3442"/>
-  <g font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
-    <text x="${X}" y="58" font-size="14" letter-spacing="3" fill="#4bd6b4" font-family="Consolas, Menlo, monospace">◆ MAIN QUEST · DEGREE</text>
-    <text x="${X}" y="104" font-size="38" font-weight="800" fill="#eef3fb">${esc(c.degree)}<tspan fill="#8b97a8" font-weight="600" font-size="26"> · ${esc(c.school)}</tspan></text>
-    <text x="${W - X}" y="104" font-size="54" font-weight="800" text-anchor="end" fill="#3aa0ff">${p}<tspan font-size="30" fill="#8b97a8">%</tspan></text>
+  <g clip-path="url(#card)">
+    <rect width="${W}" height="${H}" fill="url(#bg)"/>
+    <circle cx="80" cy="0" r="170" fill="#0b2d63" filter="url(#blur)"><animateTransform attributeName="transform" type="translate" values="0 0;90 30;0 0" dur="14s" repeatCount="indefinite"/></circle>
+  </g>
+  <rect x=".5" y=".5" width="${W - 1}" height="${H - 1}" rx="20" fill="none" stroke="#263142"/>
+  <g font-family="Segoe UI, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+    <text x="${X}" y="58" font-size="14" letter-spacing="3" fill="#4bd6b4" font-family="ui-monospace, Consolas, Menlo, monospace">MY DEGREE</text>
+    <text x="${X}" y="104" font-size="38" font-weight="800" fill="#eef3fb">${esc(c.degree)}<tspan fill="#8d99ab" font-weight="600" font-size="26"> · ${esc(c.school)}</tspan></text>
+    <text x="${W - X}" y="104" font-size="54" font-weight="800" text-anchor="end" fill="#3aa0ff">${p}<tspan font-size="30" fill="#8d99ab">%</tspan></text>
   </g>
   <rect x="${X}" y="${BY}" width="${BW}" height="${BH}" rx="9" fill="#1d2430"/>
-  <rect x="${X}" y="${BY - 2}" width="${fill}" height="${BH + 4}" rx="10" fill="url(#bar)" opacity=".55" filter="url(#soft)"/>
-  <rect x="${X}" y="${BY}" width="${fill}" height="${BH}" rx="9" fill="url(#bar)"/>
+  <g clip-path="url(#fillclip)">
+    <rect x="${X}" y="${BY}" width="${fill}" height="${BH}" fill="url(#bar)"/>
+    <rect x="${X - 200}" y="${BY}" width="200" height="${BH}" fill="url(#shine)"><animate attributeName="x" values="${X - 200};${X + fill}" dur="2.8s" begin="1.6s" repeatCount="indefinite"/></rect>
+  </g>
   ${ticks}
-  <g font-family="Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#8b97a8">
+  <g font-family="ui-monospace, Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#8d99ab">
     <text x="${X}" y="${BY + 50}">START</text>
     <text x="${W - X}" y="${BY + 50}" text-anchor="end">GRADUATION</text>
   </g>

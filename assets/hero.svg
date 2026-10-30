@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="340" viewBox="0 0 1280 340">
+  <defs>
+    <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#131a24"/><stop offset="1" stop-color="#0c1118"/></linearGradient>
+    <clipPath id="hclip"><rect width="1280" height="340" rx="20"/></clipPath>
+    <filter id="hblur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="68"/></filter>
+  </defs>
+  <g clip-path="url(#hclip)">
+    <rect width="1280" height="340" fill="url(#hbg)"/>
+    <g filter="url(#hblur)">
+      <circle cx="102.4" cy="34" r="187.00000000000003" fill="#0b2d63" opacity="0.95">
+      <animateTransform attributeName="transform" type="translate" values="0 0; 102.4 40.8; 0 0" dur="14s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>
+      <circle cx="896" cy="357" r="153" fill="#3aa0ff" opacity="0.28">
+      <animateTransform attributeName="transform" type="translate" values="0 0; -128 -34; 0 0" dur="17s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>
+      <circle cx="1216" cy="17" r="102" fill="#4bd6b4" opacity="0.16">
+      <animateTransform attributeName="transform" type="translate" values="0 0; -76.8 34; 0 0" dur="12s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>
+    </g>
+    
+  <g font-family="Segoe UI, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+    <text x="64" y="92" font-family="ui-monospace, SFMono-Regular, Consolas, Menlo, monospace" font-size="14" letter-spacing="3" fill="#4bd6b4">SYSTEMS ENGINEERING · INTEC</text>
+    <text x="60" y="176" font-size="82" font-weight="800" letter-spacing="-2.5" fill="#eef3fb">Dominique Jeldes</text>
+    <clipPath id="type"><rect x="64" y="200" width="0" height="40"><animate attributeName="width" values="0;760;760;0" keyTimes="0;.45;.9;1" dur="9s" repeatCount="indefinite"/></rect></clipPath>
+    <text x="64" y="228" font-size="24" fill="#8d99ab" clip-path="url(#type)">data centers · video games · apps I actually use</text>
+
+    <circle cx="72" cy="282" r="5" fill="#4bd6b4"/><circle cx="72" cy="282" r="5" fill="none" stroke="#4bd6b4" stroke-width="2">
+  <animate attributeName="r" values="5;13" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.8s" repeatCount="indefinite"/></circle>
+    <text x="90" y="288" font-size="16" font-weight="600" fill="#cfd8e6">online · streaming on Twitch &amp; YouTube</text>
+  </g>
+  </g>
+  <rect x=".5" y=".5" width="1279" height="339" rx="20" fill="none" stroke="#263142"/>
+</svg>
