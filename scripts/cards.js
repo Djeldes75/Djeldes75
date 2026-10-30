@@ -3,8 +3,11 @@
 const fs = require('fs'), path = require('path');
 const A = path.join(__dirname, '..', 'assets');
 const C = { bg1:'#131a24', bg2:'#0c1118', ink:'#eef3fb', soft:'#8d99ab', line:'#263142', navy:'#0b2d63', azure:'#3aa0ff', blue:'#1e6bff', teal:'#4bd6b4', amber:'#f0b45a', coral:'#ff7a59', violet:'#9b8cff' };
-const SANS = 'Segoe UI, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif';
-const MONO = 'ui-monospace, SFMono-Regular, Consolas, Menlo, monospace';
+const SANS = "'Inter Embed', Segoe UI, Helvetica, Arial, sans-serif";
+const MONO = "'Mono Embed', Consolas, Menlo, monospace";
+const FONTS = JSON.parse(fs.readFileSync(path.join(__dirname, 'fonts.json'), 'utf8'));
+// Letras incluidas dentro de cada imagen: así se ven iguales en Windows, Mac y celular
+const FONT_CSS = `<style>${['400', '600', '700', '800'].map(w => `@font-face{font-family:"Inter Embed";font-weight:${w};src:url(data:font/woff;base64,${FONTS['Inter-' + w]}) format("woff")}`).join('')}@font-face{font-family:"Mono Embed";src:url(data:font/woff;base64,${FONTS['Mono-400']}) format("woff")}</style>`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 const R = 20; // esquinas redondeadas
 
@@ -13,6 +16,7 @@ function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal
   const blob = (cx, cy, r, color, dx, dy, dur, op) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="${op}">
       <animateTransform attributeName="transform" type="translate" values="0 0; ${dx} ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+  ${FONT_CSS}
   <defs>
     <linearGradient id="${id}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.bg1}"/><stop offset="1" stop-color="${C.bg2}"/></linearGradient>
     <clipPath id="${id}clip"><rect width="${w}" height="${h}" rx="${R}"/></clipPath>
