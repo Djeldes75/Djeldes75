@@ -26,9 +26,9 @@ const ticks = Array.from({ length: 19 }, (_, i) => X + Math.round(BW * (i + 1) /
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.degree)} progress: ${p}%">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#131a24"/><stop offset="1" stop-color="#0c1118"/></linearGradient>
-    <linearGradient id="bar" x1="0" x2="1"><stop offset="0" stop-color="#1e6bff"/><stop offset=".7" stop-color="#3aa0ff"/><stop offset="1" stop-color="#4bd6b4"/></linearGradient>
+    <linearGradient id="bar" x1="0" x2="1"><stop offset="0" stop-color="#0b3a8c"/><stop offset=".55" stop-color="#1e6bff"/><stop offset="1" stop-color="#3aa0ff"/></linearGradient>
     <linearGradient id="flow" gradientUnits="userSpaceOnUse" x1="${X}" y1="0" x2="${X + BW}" y2="0" spreadMethod="reflect">
-      <stop offset="0" stop-color="#1e6bff"/><stop offset=".33" stop-color="#3aa0ff"/><stop offset=".66" stop-color="#4bd6b4"/><stop offset="1" stop-color="#1e6bff"/>
+      <stop offset="0" stop-color="#0b3a8c"/><stop offset=".33" stop-color="#1e6bff"/><stop offset=".66" stop-color="#3aa0ff"/><stop offset="1" stop-color="#0b3a8c"/>
       <animateTransform attributeName="gradientTransform" type="translate" values="0 0;${BW} 0" dur="6s" repeatCount="indefinite"/></linearGradient>
     <pattern id="stripes" width="40" height="${BH}" patternUnits="userSpaceOnUse"><path d="M0 ${BH} L20 0 L40 0 L20 ${BH}Z" fill="#fff"/></pattern>
     <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
@@ -65,7 +65,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPr
     <rect x="${X - 240}" y="${BY}" width="240" height="${BH}" fill="url(#shine)"><animate attributeName="x" values="${X - 240};${X + fill}" dur="2.2s" repeatCount="indefinite"/></rect>
   </g>
 
-  <circle cx="${X}" cy="${BY + BH / 2}" r="9" fill="#ffffff" opacity=".9"><animate attributeName="cx" values="${X};${X + fill};${X + fill}" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/><animate attributeName="r" values="7;13;7" dur="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;.4;.9" dur="1.4s" repeatCount="indefinite"/></circle>
+  <circle cx="${X}" cy="${BY + BH / 2}" r="9" fill="#cfe6ff" opacity=".9"><animate attributeName="cx" values="${X};${X + fill};${X + fill}" keyTimes="0;.15;1" dur="12s" calcMode="spline" keySplines=".2 .8 .2 1;0 0 1 1" repeatCount="indefinite"/><animate attributeName="r" values="7;13;7" dur="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;.4;.9" dur="1.4s" repeatCount="indefinite"/></circle>
   <g font-family="ui-monospace, Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#8d99ab">
     <text x="${X}" y="${BY + 50}">START</text>
     <text x="${W - X}" y="${BY + 50}" text-anchor="end">GRADUATION</text>
