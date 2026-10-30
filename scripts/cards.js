@@ -15,7 +15,10 @@ const R = 20; // esquinas redondeadas
 function frame(id, w, h, inner, { aurora = true, glow = [C.navy, C.azure, C.teal] } = {}) {
   const blob = (cx, cy, r, color, dx, dy, dur, op) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="${op}">
       <animateTransform attributeName="transform" type="translate" values="0 0; ${dx} ${dy}; 0 0" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1; .45 0 .55 1"/></circle>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+  // Margen transparente alrededor: el brillo del borde se desvanece antes de llegar a la orilla
+  // de la imagen, así las esquinas se ven redondas de verdad.
+  const P = 12;
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w + 2 * P}" height="${h + 2 * P}" viewBox="${-P} ${-P} ${w + 2 * P} ${h + 2 * P}" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
   ${FONT_CSS}
   <defs>
     <linearGradient id="${id}bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C.bg1}"/><stop offset="1" stop-color="${C.bg2}"/></linearGradient>
@@ -44,7 +47,7 @@ function lightBorder(id, w, h) {
       <stop offset="0" stop-color="${C.teal}"/><stop offset=".35" stop-color="${C.azure}"/><stop offset=".65" stop-color="${C.navy}" stop-opacity=".25"/><stop offset="1" stop-color="${C.teal}"/>
       <animateTransform attributeName="gradientTransform" type="rotate" values="0 .5 .5;360 .5 .5" dur="8s" repeatCount="indefinite"/></linearGradient>`;
   const rect = extra => `<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${R - 1}" fill="none" stroke="url(#${id}lb)" ${extra}/>`;
-  return `<defs>${grad}<filter id="${id}lbg" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+  return `<defs>${grad}<filter id="${id}lbg" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
   ${rect(`stroke-width="6" filter="url(#${id}lbg)" opacity=".45"`)}${rect('stroke-width="1.5"')}`;
 }
 // Partículas que suben despacio (números fijos para que siempre salga igual)

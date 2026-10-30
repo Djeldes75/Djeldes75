@@ -26,7 +26,7 @@ function countUp(x, y, n, cycle = 12, count = 1.8) {
 const PER = 2 * (W + H) - (8 - 2 * Math.PI) * 19;
 const ticks = Array.from({ length: 19 }, (_, i) => X + Math.round(BW * (i + 1) / 20))
   .map(x => `<rect x="${x}" y="${BY}" width="2" height="${BH}" fill="#0c1118" opacity=".9"/>`).join('');
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.degree)} progress: ${p}%">
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" width="${W + 24}" height="${H + 24}" viewBox="-12 -12 ${W + 24} ${H + 24}" role="img" aria-label="${esc(c.degree)} progress: ${p}%">
   ${FONT_CSS}
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#131a24"/><stop offset="1" stop-color="#0c1118"/></linearGradient>
@@ -49,7 +49,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPr
   <defs><linearGradient id="lb" gradientUnits="objectBoundingBox" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#4bd6b4"/><stop offset=".35" stop-color="#3aa0ff"/><stop offset=".65" stop-color="#0b2d63" stop-opacity=".25"/><stop offset="1" stop-color="#4bd6b4"/>
       <animateTransform attributeName="gradientTransform" type="rotate" values="0 .5 .5;360 .5 .5" dur="8s" repeatCount="indefinite"/></linearGradient>
-    <filter id="lbg" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+    <filter id="lbg" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
   <rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="19" fill="none" stroke="url(#lb)" stroke-width="6" filter="url(#lbg)" opacity=".45"/>
   <rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="19" fill="none" stroke="url(#lb)" stroke-width="1.5"/>
   <g font-family="'Inter Embed', Segoe UI, Helvetica, Arial, sans-serif">
